@@ -1,0 +1,43 @@
+name: Terraform Dispatcher
+on:
+  workflow_dispatch:
+    inputs:
+      verb:
+        description: 'Terraform Verb (plan, apply, or destroy)'
+        required: true
+        default: ''
+        options:
+          - plan
+          - apply
+          - destroy
+
+env:
+  AZURE_STORAGE_ACCOUNT_NAME: devops2sources
+  AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }}
+  AZURE_FILE_SHARE_NAME: devops-platforms
+  TFSTATE_FILE_PATH: infra-deploy/main/aks/build/terraform.tfstate
+  TFVARS_FILE_PATH: infra-deploy/main/aks/terraform.tfvars
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do repositório
+      uses: actions/checkout@v2
+
+    - name: Terraform files download
+      run: |
+        # az storage directory create --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --name terraform --fail-on-exist
+        az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path terraform/terraform.tfstate --dest $TFSTATE_FILE_PATH
+        az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path terraform/terraform.tfstate --dest $TFVARS_FILE_PATH
+    - name: Executar comando do Terraform
+      env:
+        VERB: ${{ github.event.inputs.verb }}
+      run: |
+        terraform init
+        terraform ${VERB} --auto-approve
+
+    - name: terraform.tfstate upload
+      run: |
+        az storage file upload --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path terraform/terraform.tfstate --source $TFSTATE_FILE_PATH --type file --overwrite
