@@ -17,6 +17,8 @@ env:
   AZURE_FILE_SHARE_NAME: devops-platforms
   TFSTATE_FILE_PATH: infra-deploy/main/aks/build/terraform.tfstate
   TFVARS_FILE_PATH: infra-deploy/main/aks/terraform.tfvars
+  AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
 
 jobs:
   terraform:
@@ -37,7 +39,7 @@ jobs:
       run: |
         terraform init
         if [[ ${VERB} == "plan"  ]]; then 
-            terraform ${VERB}
+            terraform ${VERB} -var="client_id=$AZURE_CLIENT_ID" -var="client_secret=$AZURE_CLIENT_SECRET"
         else
             terraform ${VERB} --auto-approve
         fi
