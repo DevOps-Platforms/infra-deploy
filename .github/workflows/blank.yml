@@ -28,9 +28,9 @@ jobs:
 
     - name: Terraform files download
       run: |
-        # az storage directory create --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --name terraform --fail-on-exist
-        az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path terraform/terraform.tfstate --dest $TFSTATE_FILE_PATH
-        az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path terraform/terraform.tfstate --dest $TFVARS_FILE_PATH
+        #az storage directory create --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --name infra-deploy --fail-on-exist
+        az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path $TFSTATE_FILE_PATH --dest infra-deploy/terraform.tfstate
+        az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path $TFVARS_FILE_PATH --dest infra-deploy/terraform.tfvars
     - name: Executar comando do Terraform
       env:
         VERB: ${{ github.event.inputs.verb }}
@@ -40,4 +40,4 @@ jobs:
 
     - name: terraform.tfstate upload
       run: |
-        az storage file upload --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path terraform/terraform.tfstate --source $TFSTATE_FILE_PATH --type file --overwrite
+        az storage file upload --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path infra-deploy/terraform.tfstate --source $TFSTATE_FILE_PATH --type file --overwrite
