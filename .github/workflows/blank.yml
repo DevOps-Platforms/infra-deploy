@@ -28,7 +28,7 @@ jobs:
 
     - name: Terraform files download
       run: |
-        az storage directory create --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --name infra-deploy --fail-on-exist
+        #az storage directory create --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --name infra-deploy --fail-on-exist
         az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path $TFSTATE_FILE_PATH --dest infra-deploy/terraform.tfstate
         az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path $TFVARS_FILE_PATH --dest infra-deploy/terraform.tfvars
     - name: Executar comando do Terraform
