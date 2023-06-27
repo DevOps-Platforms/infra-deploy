@@ -32,7 +32,7 @@ jobs:
       run: |
         #az storage directory create --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --name infra-deploy --fail-on-exist
         #az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path $TFSTATE_FILE_PATH --dest infra-deploy/terraform.tfstate
-        sudo az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path $TFVARS_FILE_PATH --dest /
+        sudo az storage file download --account-name $AZURE_STORAGE_ACCOUNT_NAME --account-key $AZURE_STORAGE_ACCOUNT_KEY --share-name $AZURE_FILE_SHARE_NAME --path $TFVARS_FILE_PATH 
     
     - name: check terraform.tfvars
       run: cat terraform.tfvars
